@@ -1,0 +1,15 @@
+<resources>
+        <string name="tipo">Tipo</string>
+        <string name="titulo">Título *</string>
+        <string name="autor">Autor / Director / Desarrollador</string>
+        <string name="ano">Año</string>
+        <string name="genero">Género</string>
+        <string name="sinopsis">Sinopsis</string>
+        <string name="url_portada">URL de portada</string>
+        <string name="etiquetas">Etiquetas (separadas por coma)</string>
+        <string name="estado">Estado</string>
+        <string name="puntuacion">Puntuación</string>
+        <string name="resena">Reseña personal</string>
+        <string name="guardar">Guardar</string>
+    <string name="app_name">Mi Biblioteca</string>
+</resources>
