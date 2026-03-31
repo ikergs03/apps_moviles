@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/libraryFragment">
+
+    <fragment
+        android:id="@+id/libraryFragment"
+        android:name="com.example.mylibrary.ui.library.LibraryFragment"
+        android:label="Mi Biblioteca"
+        tools:layout="@layout/fragment_library">
+
+        <action
+            android:id="@+id/action_libraryFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+
+        <action
+            android:id="@+id/action_libraryFragment_to_addEditFragment"
+            app:destination="@id/addEditFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.example.mylibrary.ui.detail.DetailFragment"
+        android:label="Detalle"
+        tools:layout="@layout/fragment_detail">
+
+        <argument
+            android:name="itemId"
+            app:argType="long" />
+
+        <action
+            android:id="@+id/action_detailFragment_to_addEditFragment"
+            app:destination="@id/addEditFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/addEditFragment"
+        android:name="com.example.mylibrary.ui.addedit.AddEditFragment"
+        android:label="Añadir / Editar"
+        tools:layout="@layout/fragment_add_edit">
+
+        <argument
+            android:name="itemId"
+            android:defaultValue="0L"
+            app:argType="long" />
+
+    </fragment>
+
+</navigation>
