@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -21,6 +23,8 @@ class AddEditFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: AddEditViewModel by viewModels()
     private val args: AddEditFragmentArgs by navArgs()
+    private var currentSuggestions: List<LibraryItem> = emptyList()
+    private var isPopulatingForm = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,24 +49,50 @@ class AddEditFragment : Fragment() {
         }
 
         viewModel.suggestions.observe(viewLifecycleOwner) { suggestions ->
+            currentSuggestions = suggestions
             val adapter = ArrayAdapter(
                 requireContext(),
                 android.R.layout.simple_dropdown_item_1line,
                 suggestions.map { it.title }
             )
             binding.etTitle.setAdapter(adapter)
-            binding.etTitle.setOnItemClickListener { _, _, position, _ ->
-                if (position < suggestions.size) {
-                    viewModel.selectSuggestion(suggestions[position])
-                }
+
+            if (suggestions.isNotEmpty()) {
+                binding.etTitle.showDropDown()
+            } else {
+                binding.etTitle.dismissDropDown()
             }
         }
 
+        binding.etTitle.setOnItemClickListener { _, _, position, _ ->
+            if (position in currentSuggestions.indices) {
+                viewModel.selectSuggestion(currentSuggestions[position])
+            }
+        }
+
+        binding.etTitle.doAfterTextChanged { editable ->
+            if (isPopulatingForm) return@doAfterTextChanged
+
+            val query = editable?.toString()?.trim().orEmpty()
+            viewModel.searchSuggestions(query, selectedType())
+        }
+
         binding.etTitle.setOnEditorActionListener { _, _, _ ->
-            val query = binding.etTitle.text.toString()
+            val query = binding.etTitle.text.toString().trim()
             val type = selectedType()
             if (query.length >= 3) viewModel.searchSuggestions(query, type)
             false
+        }
+
+        binding.spinnerType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (isPopulatingForm) return
+
+                val query = binding.etTitle.text.toString().trim()
+                viewModel.searchSuggestions(query, selectedType())
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
         }
 
         viewModel.saved.observe(viewLifecycleOwner) { saved ->
@@ -104,6 +134,7 @@ class AddEditFragment : Fragment() {
     }
 
     private fun populateForm(item: LibraryItem) {
+        isPopulatingForm = true
         binding.etTitle.setText(item.title)
         binding.etAuthor.setText(item.author)
         binding.etYear.setText(item.year)
@@ -124,6 +155,7 @@ class AddEditFragment : Fragment() {
             ItemStatus.COMPLETED -> 2
             ItemStatus.ABANDONED -> 3
         })
+        isPopulatingForm = false
     }
 
     private fun save() {
