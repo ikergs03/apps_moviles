@@ -8,7 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:cardCornerRadius="8dp">
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,8 +37,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
 
             <TextView
                 android:id="@+id/tv_author"
@@ -45,8 +45,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:textSize="13sp" />
+                android:textAppearance="?attr/textAppearanceBodySmall" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -58,7 +57,7 @@
                     android:id="@+id/tv_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="11sp" />
+                    android:textAppearance="?attr/textAppearanceLabelSmall" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -71,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="?attr/colorPrimary"
-                    android:textSize="11sp" />
+                    android:textAppearance="?attr/textAppearanceLabelSmall" />
 
             </LinearLayout>
 
