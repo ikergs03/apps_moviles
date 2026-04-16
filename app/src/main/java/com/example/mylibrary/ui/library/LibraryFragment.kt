@@ -1,7 +1,4 @@
 package com.example.mylibrary.ui.library
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.ImageView
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +16,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.mylibrary.R
 import com.example.mylibrary.data.model.ItemType
+import com.example.mylibrary.data.model.LibraryItem
 import com.example.mylibrary.databinding.FragmentLibraryBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +26,7 @@ class LibraryFragment : Fragment() {
     private var _binding: FragmentLibraryBinding? = null
     private val binding get() = _binding!!
     private val viewModel: LibraryViewModel by viewModels()
-    // private lateinit var adapter: LibraryAdapter
+    private lateinit var adapter: LibraryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,62 +40,24 @@ class LibraryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        adapter = LibraryAdapter(
+            onItemClick = { item ->
+                val action = LibraryFragmentDirections.actionLibraryFragmentToDetailFragment(item.id)
+                findNavController().navigate(action)
+            },
+            onItemLongClick = { item ->
+                showDeleteDialog(item)
+            }
+        )
+        binding.rvLibrary.adapter = adapter
+        binding.rvLibrary.setHasFixedSize(true)
 
         viewModel.items.observe(viewLifecycleOwner) { items ->
-            val container = binding.root.findViewById<LinearLayout>(R.id.list_container)
-            container.removeAllViews()
+            adapter.updateData(items)
             if (items.isEmpty()) {
                 binding.tvEmpty.visibility = View.VISIBLE
             } else {
                 binding.tvEmpty.visibility = View.GONE
-                val inflater = LayoutInflater.from(requireContext())
-                items.forEach { item ->
-                    val itemView = inflater.inflate(R.layout.item_library, container, false)
-                    // Set data manually
-                    itemView.findViewById<TextView>(R.id.tv_title).text = item.title
-                    itemView.findViewById<TextView>(R.id.tv_author).text = item.author.ifBlank { item.year }
-                    itemView.findViewById<TextView>(R.id.tv_status).text = when (item.status) {
-                        com.example.mylibrary.data.model.ItemStatus.PENDING -> "Pendiente"
-                        com.example.mylibrary.data.model.ItemStatus.IN_PROGRESS -> "En progreso"
-                        com.example.mylibrary.data.model.ItemStatus.COMPLETED -> "Completado"
-                        com.example.mylibrary.data.model.ItemStatus.ABANDONED -> "Abandonado"
-                    }
-                    itemView.findViewById<TextView>(R.id.tv_type).text = when (item.type) {
-                        com.example.mylibrary.data.model.ItemType.BOOK -> "📚 Libro"
-                        com.example.mylibrary.data.model.ItemType.MOVIE -> "🎬 Película"
-                        com.example.mylibrary.data.model.ItemType.VIDEOGAME -> "🎮 Videojuego"
-                    }
-                    val ivCover = itemView.findViewById<ImageView>(R.id.iv_cover)
-                    if (item.coverUrl.isNotBlank()) {
-                        // Glide is available, but for simplicity, use setImageResource as fallback
-                        try {
-                            com.bumptech.glide.Glide.with(itemView.context)
-                                .load(item.coverUrl)
-                                .placeholder(R.drawable.ic_placeholder)
-                                .error(R.drawable.ic_placeholder)
-                                .centerCrop()
-                                .into(ivCover)
-                        } catch (e: Exception) {
-                            ivCover.setImageResource(R.drawable.ic_placeholder)
-                        }
-                    } else {
-                        ivCover.setImageResource(R.drawable.ic_placeholder)
-                    }
-                    itemView.setOnClickListener {
-                        val action = LibraryFragmentDirections.actionLibraryFragmentToDetailFragment(item.id)
-                        findNavController().navigate(action)
-                    }
-                    itemView.setOnLongClickListener {
-                        MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Eliminar")
-                            .setMessage("¿Eliminar \"${item.title}\"?")
-                            .setPositiveButton("Eliminar") { _, _ -> viewModel.deleteItem(item) }
-                            .setNegativeButton("Cancelar", null)
-                            .show()
-                        true
-                    }
-                    container.addView(itemView)
-                }
             }
         }
 
@@ -124,6 +84,15 @@ class LibraryFragment : Fragment() {
             }
         }
         binding.chipAll.isChecked = true
+    }
+
+    private fun showDeleteDialog(item: LibraryItem) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Eliminar")
+            .setMessage("¿Eliminar \"${item.title}\"?")
+            .setPositiveButton("Eliminar") { _, _ -> viewModel.deleteItem(item) }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     private fun setupMenu() {
