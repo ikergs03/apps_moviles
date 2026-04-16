@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <!-- Puedes añadir variables aquí si lo necesitas en el futuro -->
     </data>
@@ -18,23 +19,53 @@
             android:layout_height="wrap_content"
             android:text="@string/tipo"
             android:textStyle="bold"
-            android:labelFor="@id/spinner_type" />
+            android:labelFor="@id/toggle_type" />
 
-        <Spinner
-            android:id="@+id/spinner_type"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggle_type"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/tipo"
-            android:importantForAccessibility="yes" />
+            android:importantForAccessibility="yes"
+            app:checkedButton="@id/btn_type_book"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_type_book"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/tipo_libro" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_type_movie"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/tipo_pelicula" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_type_videogame"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/tipo_videojuego" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Título *"
             android:layout_marginBottom="8dp">
 
-            <AutoCompleteTextView
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/et_title"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -42,9 +73,7 @@
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:contentDescription="@string/titulo"
-                android:importantForAccessibility="yes"
-                android:textColor="@color/black"
-                android:backgroundTint="@color/purple_200" />
+                android:importantForAccessibility="yes" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -59,7 +88,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:contentDescription="@string/autor"
-                android:textColor="@color/black"
                 android:importantForAccessibility="yes" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -76,7 +104,6 @@
                 android:layout_height="48dp"
                 android:inputType="number"
                 android:contentDescription="@string/ano"
-                android:textColor="@color/black"
                 android:importantForAccessibility="yes" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -92,7 +119,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:contentDescription="@string/genero"
-                android:textColor="@color/black"
                 android:importantForAccessibility="yes" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -110,7 +136,6 @@
                 android:inputType="textMultiLine"
                 android:minLines="3"
                 android:contentDescription="@string/sinopsis"
-                android:textColor="@color/black"
                 android:importantForAccessibility="yes" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -127,7 +152,6 @@
                 android:layout_height="wrap_content"
                 android:inputType="textUri"
                 android:contentDescription="@string/url_portada"
-                android:textColor="@color/black"
                 android:importantForAccessibility="yes" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -143,7 +167,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/etiquetas"
-                android:textColor="@color/black"
                 android:importantForAccessibility="yes" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -154,15 +177,49 @@
             android:layout_marginTop="8dp"
             android:text="@string/estado"
             android:textStyle="bold"
-            android:labelFor="@id/spinner_status" />
+            android:labelFor="@id/toggle_status" />
 
-        <Spinner
-            android:id="@+id/spinner_status"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggle_status"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/estado"
-            android:importantForAccessibility="yes" />
+            android:importantForAccessibility="yes"
+            android:orientation="vertical"
+            app:checkedButton="@id/btn_status_pending"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_status_pending"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/estado_pendiente" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_status_in_progress"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/estado_en_progreso" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_status_completed"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/estado_completado" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_status_abandoned"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/estado_abandonado" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <TextView
             android:layout_width="match_parent"
@@ -195,7 +252,6 @@
                 android:inputType="textMultiLine"
                 android:minLines="2"
                 android:contentDescription="@string/resena"
-                android:textColor="@color/black"
                 android:importantForAccessibility="yes" />
 
         </com.google.android.material.textfield.TextInputLayout>

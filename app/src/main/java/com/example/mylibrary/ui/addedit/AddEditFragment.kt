@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.mylibrary.R
 import com.example.mylibrary.data.model.ItemStatus
 import com.example.mylibrary.data.model.ItemType
 import com.example.mylibrary.data.model.LibraryItem
@@ -38,7 +38,7 @@ class AddEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupSpinners()
+        setupToggleGroups()
 
         if (args.itemId > 0) {
             viewModel.loadItem(args.itemId)
@@ -71,6 +71,7 @@ class AddEditFragment : Fragment() {
         }
 
         binding.etTitle.doAfterTextChanged { editable ->
+            binding.tilTitle.error = null
             if (isPopulatingForm) return@doAfterTextChanged
 
             val query = editable?.toString()?.trim().orEmpty()
@@ -84,15 +85,10 @@ class AddEditFragment : Fragment() {
             false
         }
 
-        binding.spinnerType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (isPopulatingForm) return
-
-                val query = binding.etTitle.text.toString().trim()
-                viewModel.searchSuggestions(query, selectedType())
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+        binding.toggleType.addOnButtonCheckedListener { _, _, isChecked ->
+            if (!isChecked || isPopulatingForm) return@addOnButtonCheckedListener
+            val query = binding.etTitle.text.toString().trim()
+            viewModel.searchSuggestions(query, selectedType())
         }
 
         viewModel.saved.observe(viewLifecycleOwner) { saved ->
@@ -102,34 +98,21 @@ class AddEditFragment : Fragment() {
         binding.btnSave.setOnClickListener { save() }
     }
 
-    private fun setupSpinners() {
-        val typeAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_item,
-            listOf("Libro", "Película", "Videojuego")
-        )
-        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinnerType.adapter = typeAdapter
-
-        val statusAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_item,
-            listOf("Pendiente", "En progreso", "Completado", "Abandonado")
-        )
-        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinnerStatus.adapter = statusAdapter
+    private fun setupToggleGroups() {
+        binding.toggleType.check(binding.btnTypeBook.id)
+        binding.toggleStatus.check(binding.btnStatusPending.id)
     }
 
-    private fun selectedType(): ItemType = when (binding.spinnerType.selectedItemPosition) {
-        1 -> ItemType.MOVIE
-        2 -> ItemType.VIDEOGAME
+    private fun selectedType(): ItemType = when (binding.toggleType.checkedButtonId) {
+        binding.btnTypeMovie.id -> ItemType.MOVIE
+        binding.btnTypeVideogame.id -> ItemType.VIDEOGAME
         else -> ItemType.BOOK
     }
 
-    private fun selectedStatus(): ItemStatus = when (binding.spinnerStatus.selectedItemPosition) {
-        1 -> ItemStatus.IN_PROGRESS
-        2 -> ItemStatus.COMPLETED
-        3 -> ItemStatus.ABANDONED
+    private fun selectedStatus(): ItemStatus = when (binding.toggleStatus.checkedButtonId) {
+        binding.btnStatusInProgress.id -> ItemStatus.IN_PROGRESS
+        binding.btnStatusCompleted.id -> ItemStatus.COMPLETED
+        binding.btnStatusAbandoned.id -> ItemStatus.ABANDONED
         else -> ItemStatus.PENDING
     }
 
@@ -144,16 +127,16 @@ class AddEditFragment : Fragment() {
         binding.etTags.setText(item.tags)
         binding.ratingBar.rating = item.rating
         binding.etReview.setText(item.review)
-        binding.spinnerType.setSelection(when (item.type) {
-            ItemType.BOOK -> 0
-            ItemType.MOVIE -> 1
-            ItemType.VIDEOGAME -> 2
+        binding.toggleType.check(when (item.type) {
+            ItemType.BOOK -> binding.btnTypeBook.id
+            ItemType.MOVIE -> binding.btnTypeMovie.id
+            ItemType.VIDEOGAME -> binding.btnTypeVideogame.id
         })
-        binding.spinnerStatus.setSelection(when (item.status) {
-            ItemStatus.PENDING -> 0
-            ItemStatus.IN_PROGRESS -> 1
-            ItemStatus.COMPLETED -> 2
-            ItemStatus.ABANDONED -> 3
+        binding.toggleStatus.check(when (item.status) {
+            ItemStatus.PENDING -> binding.btnStatusPending.id
+            ItemStatus.IN_PROGRESS -> binding.btnStatusInProgress.id
+            ItemStatus.COMPLETED -> binding.btnStatusCompleted.id
+            ItemStatus.ABANDONED -> binding.btnStatusAbandoned.id
         })
         isPopulatingForm = false
     }
@@ -161,7 +144,7 @@ class AddEditFragment : Fragment() {
     private fun save() {
         val title = binding.etTitle.text.toString().trim()
         if (title.isBlank()) {
-            binding.etTitle.error = "El título es obligatorio"
+            binding.tilTitle.error = getString(R.string.error_titulo_obligatorio)
             return
         }
         val item = LibraryItem(
