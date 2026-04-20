@@ -15,6 +15,7 @@ import com.example.mylibrary.data.model.ItemStatus
 import com.example.mylibrary.data.model.ItemType
 import com.example.mylibrary.data.model.LibraryItem
 import com.example.mylibrary.databinding.FragmentAddEditBinding
+import com.example.mylibrary.ui.settings.SettingsActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -39,6 +40,13 @@ class AddEditFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupToggleGroups()
+
+        if (args.itemId == 0L) {
+            val defaultTags = SettingsActivity.getDefaultTags(requireContext())
+            if (defaultTags.isNotBlank()) {
+                binding.etTags.setText(defaultTags)
+            }
+        }
 
         if (args.itemId > 0) {
             viewModel.loadItem(args.itemId)

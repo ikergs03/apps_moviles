@@ -1,6 +1,7 @@
 package com.example.mylibrary.ui.library
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -9,6 +10,7 @@ import com.example.mylibrary.data.model.ItemStatus
 import com.example.mylibrary.data.model.ItemType
 import com.example.mylibrary.data.model.LibraryItem
 import com.example.mylibrary.databinding.ItemLibraryBinding
+import com.example.mylibrary.ui.settings.SettingsActivity
 
 class LibraryAdapter(
 	private val onItemClick: (LibraryItem) -> Unit,
@@ -53,15 +55,22 @@ class LibraryAdapter(
 				ItemType.VIDEOGAME -> "🎮 Videojuego"
 			}
 
-			if (item.coverUrl.isNotBlank()) {
-				Glide.with(binding.root.context)
-					.load(item.coverUrl)
-					.placeholder(R.drawable.ic_placeholder)
-					.error(R.drawable.ic_placeholder)
-					.centerCrop()
-					.into(binding.ivCover)
+			val showCovers = SettingsActivity.isShowCoversEnabled(binding.root.context)
+			if (!showCovers) {
+				binding.ivCover.visibility = View.GONE
+				Glide.with(binding.root.context).clear(binding.ivCover)
 			} else {
-				binding.ivCover.setImageResource(R.drawable.ic_placeholder)
+				binding.ivCover.visibility = View.VISIBLE
+				if (item.coverUrl.isNotBlank()) {
+					Glide.with(binding.root.context)
+						.load(item.coverUrl)
+						.placeholder(R.drawable.ic_placeholder)
+						.error(R.drawable.ic_placeholder)
+						.centerCrop()
+						.into(binding.ivCover)
+				} else {
+					binding.ivCover.setImageResource(R.drawable.ic_placeholder)
+				}
 			}
 
 			binding.root.setOnClickListener { onItemClick(item) }

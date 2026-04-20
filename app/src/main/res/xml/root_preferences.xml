@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/pref_category_display">
+
+        <SwitchPreferenceCompat
+            app:key="pref_show_covers"
+            app:defaultValue="true"
+            app:summaryOff="@string/pref_show_covers_off"
+            app:summaryOn="@string/pref_show_covers_on"
+            app:title="@string/pref_show_covers_title" />
+
+        <ListPreference
+            app:key="pref_default_filter"
+            app:defaultValue="all"
+            app:entries="@array/pref_filter_entries"
+            app:entryValues="@array/pref_filter_values"
+            app:title="@string/pref_default_filter_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/pref_category_behavior">
+
+        <SwitchPreferenceCompat
+            app:key="pref_confirm_delete"
+            app:defaultValue="true"
+            app:summaryOff="@string/pref_confirm_delete_off"
+            app:summaryOn="@string/pref_confirm_delete_on"
+            app:title="@string/pref_confirm_delete_title" />
+
+        <EditTextPreference
+            app:key="pref_default_tags"
+            app:defaultValue=""
+            app:dialogTitle="@string/pref_default_tags_dialog"
+            app:title="@string/pref_default_tags_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

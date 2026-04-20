@@ -29,4 +29,16 @@
     <string name="bottom_nav_statistics">Estadísticas</string>
     <string name="statistics_placeholder_title">Estadísticas</string>
     <string name="statistics_placeholder_subtitle">Próximamente podrás ver métricas de tu biblioteca.</string>
+    <string name="settings">Ajustes</string>
+    <string name="pref_category_display">Pantalla y lista</string>
+    <string name="pref_category_behavior">Comportamiento</string>
+    <string name="pref_show_covers_title">Mostrar portadas en la biblioteca</string>
+    <string name="pref_show_covers_on">Se mostrarán las portadas en cada elemento</string>
+    <string name="pref_show_covers_off">No se mostrarán portadas en los elementos</string>
+    <string name="pref_default_filter_title">Filtro por defecto al abrir biblioteca</string>
+    <string name="pref_confirm_delete_title">Confirmar antes de eliminar</string>
+    <string name="pref_confirm_delete_on">Se mostrará un diálogo de confirmación</string>
+    <string name="pref_confirm_delete_off">Los elementos se eliminarán sin confirmación</string>
+    <string name="pref_default_tags_title">Etiquetas por defecto</string>
+    <string name="pref_default_tags_dialog">Introduce etiquetas por defecto (separadas por coma)</string>
 </resources>

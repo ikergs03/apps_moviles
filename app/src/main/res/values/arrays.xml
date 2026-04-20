@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_filter_entries">
+        <item>Todos</item>
+        <item>Libros</item>
+        <item>Películas</item>
+        <item>Videojuegos</item>
+    </string-array>
+
+    <string-array name="pref_filter_values">
+        <item>all</item>
+        <item>book</item>
+        <item>movie</item>
+        <item>videogame</item>
+    </string-array>
+</resources>

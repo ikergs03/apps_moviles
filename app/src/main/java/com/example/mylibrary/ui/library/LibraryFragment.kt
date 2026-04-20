@@ -1,5 +1,6 @@
 package com.example.mylibrary.ui.library
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -18,6 +19,7 @@ import com.example.mylibrary.R
 import com.example.mylibrary.data.model.ItemType
 import com.example.mylibrary.data.model.LibraryItem
 import com.example.mylibrary.databinding.FragmentLibraryBinding
+import com.example.mylibrary.ui.settings.SettingsActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -83,10 +85,28 @@ class LibraryFragment : Fragment() {
                 chip.isChecked = true
             }
         }
-        binding.chipAll.isChecked = true
+
+        val defaultFilter = SettingsActivity.getDefaultFilter(requireContext())
+        val defaultChipAndType = when (defaultFilter) {
+            "book" -> binding.chipBooks to ItemType.BOOK
+            "movie" -> binding.chipMovies to ItemType.MOVIE
+            "videogame" -> binding.chipGames to ItemType.VIDEOGAME
+            else -> binding.chipAll to null
+        }
+
+        chips.forEach { (chip, _) -> chip.isChecked = false }
+        defaultChipAndType.first.isChecked = true
+        viewModel.setFilterType(defaultChipAndType.second)
     }
 
     private fun showDeleteDialog(item: LibraryItem) {
+        val confirmDelete = SettingsActivity.isConfirmDeleteEnabled(requireContext())
+
+        if (!confirmDelete) {
+            viewModel.deleteItem(item)
+            return
+        }
+
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Eliminar")
             .setMessage("¿Eliminar \"${item.title}\"?")
@@ -111,7 +131,15 @@ class LibraryFragment : Fragment() {
                 })
             }
 
-            override fun onMenuItemSelected(item: MenuItem) = false
+            override fun onMenuItemSelected(item: MenuItem): Boolean {
+                return when (item.itemId) {
+                    R.id.action_settings -> {
+                        startActivity(Intent(requireContext(), SettingsActivity::class.java))
+                        true
+                    }
+                    else -> false
+                }
+            }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
