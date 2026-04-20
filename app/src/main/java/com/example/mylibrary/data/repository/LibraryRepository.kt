@@ -1,10 +1,10 @@
 package com.example.mylibrary.data.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import com.example.mylibrary.data.local.LibraryItemDao
 import com.example.mylibrary.data.local.LibraryItemEntity
 import com.example.mylibrary.data.model.LibraryItem
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,17 +12,17 @@ import javax.inject.Singleton
 class LibraryRepository @Inject constructor(
     private val dao: LibraryItemDao
 ) {
-    fun getAllItems(): Flow<List<LibraryItem>> =
-        dao.getAllItems().map { entities -> entities.map { it.toLibraryItem() } }
+    fun getAllItems(): LiveData<List<LibraryItem>> =
+        Transformations.map(dao.getAllItems()) { entities -> entities.map { it.toLibraryItem() } }
 
-    fun getItemsByType(type: String): Flow<List<LibraryItem>> =
-        dao.getItemsByType(type).map { entities -> entities.map { it.toLibraryItem() } }
+    fun getItemsByType(type: String): LiveData<List<LibraryItem>> =
+        Transformations.map(dao.getItemsByType(type)) { entities -> entities.map { it.toLibraryItem() } }
 
-    fun searchItems(query: String): Flow<List<LibraryItem>> =
-        dao.searchItems("%$query%").map { entities -> entities.map { it.toLibraryItem() } }
+    fun searchItems(query: String): LiveData<List<LibraryItem>> =
+        Transformations.map(dao.searchItems("%$query%")) { entities -> entities.map { it.toLibraryItem() } }
 
-    fun getItemsByStatus(status: String): Flow<List<LibraryItem>> =
-        dao.getItemsByStatus(status).map { entities -> entities.map { it.toLibraryItem() } }
+    fun getItemsByStatus(status: String): LiveData<List<LibraryItem>> =
+        Transformations.map(dao.getItemsByStatus(status)) { entities -> entities.map { it.toLibraryItem() } }
 
     suspend fun getItemById(id: Long): LibraryItem? =
         dao.getItemById(id)?.toLibraryItem()

@@ -3,7 +3,6 @@ package com.example.mylibrary.ui.library
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.example.mylibrary.data.model.ItemType
@@ -24,9 +23,9 @@ class LibraryViewModel @Inject constructor(
     val items: LiveData<List<LibraryItem>> = _searchQuery.switchMap { query ->
         _filterType.switchMap { type ->
             when {
-                query.isNotBlank() -> repository.searchItems(query).asLiveData()
-                type != null -> repository.getItemsByType(type.name).asLiveData()
-                else -> repository.getAllItems().asLiveData()
+                query.isNotBlank() -> repository.searchItems(query)
+                type != null -> repository.getItemsByType(type.name)
+                else -> repository.getAllItems()
             }
         }
     }
