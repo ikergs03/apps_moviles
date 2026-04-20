@@ -50,4 +50,10 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/statisticsFragment"
+        android:name="com.example.mylibrary.ui.statistics.StatisticsFragment"
+        android:label="Estadísticas"
+        tools:layout="@layout/fragment_statistics" />
+
 </navigation>

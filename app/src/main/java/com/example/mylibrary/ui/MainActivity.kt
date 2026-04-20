@@ -1,10 +1,13 @@
 package com.example.mylibrary.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.mylibrary.R
 import com.example.mylibrary.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -12,6 +15,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var appBarConfig: AppBarConfiguration
+    private val topLevelDestinations = setOf(
+        R.id.libraryFragment,
+        R.id.addEditFragment,
+        R.id.statisticsFragment
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,20 +28,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
-        binding.toolbar.post {
+        val navController = findNavController(R.id.nav_host_fragment)
+        appBarConfig = AppBarConfiguration(topLevelDestinations, binding.drawerLayout)
+        setupActionBarWithNavController(navController, appBarConfig)
+        binding.navView.setupWithNavController(navController)
+        binding.bottomNav.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val isTopLevel = destination.id in topLevelDestinations
+            binding.bottomNav.visibility = if (isTopLevel) View.VISIBLE else View.GONE
             binding.toolbar.navigationIcon?.setTint(getColor(R.color.gray_toolbar_icon))
         }
 
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        val appBarConfig = AppBarConfiguration(setOf(R.id.libraryFragment))
-        setupActionBarWithNavController(navController, appBarConfig)
+        binding.toolbar.post {
+            binding.toolbar.navigationIcon?.setTint(getColor(R.color.gray_toolbar_icon))
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        return navHostFragment.navController.navigateUp() || super.onSupportNavigateUp()
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp(appBarConfig) || super.onSupportNavigateUp()
     }
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@id/libraryFragment"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="@string/nav_menu_library" />
+
+    <item
+        android:id="@id/addEditFragment"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_input_add"
+        android:title="@string/nav_menu_add_item" />
+
+    <item
+        android:id="@id/statisticsFragment"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="@string/nav_menu_statistics" />
+
+</menu>

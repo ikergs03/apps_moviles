@@ -20,4 +20,13 @@
     <string name="guardar">Guardar</string>
     <string name="error_titulo_obligatorio">El título es obligatorio</string>
     <string name="app_name">Mi Biblioteca</string>
+    <string name="nav_menu_library">Biblioteca</string>
+    <string name="nav_menu_add_item">Nuevo elemento</string>
+    <string name="nav_menu_statistics">Estadísticas</string>
+    <string name="nav_header_subtitle">Navegación principal</string>
+    <string name="bottom_nav_library">Biblioteca</string>
+    <string name="bottom_nav_add">Añadir</string>
+    <string name="bottom_nav_statistics">Estadísticas</string>
+    <string name="statistics_placeholder_title">Estadísticas</string>
+    <string name="statistics_placeholder_subtitle">Próximamente podrás ver métricas de tu biblioteca.</string>
 </resources>
