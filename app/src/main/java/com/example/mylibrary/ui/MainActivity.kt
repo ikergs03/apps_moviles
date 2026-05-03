@@ -39,11 +39,11 @@ class MainActivity : AppCompatActivity() {
             try {
                 val navController = findNavController(R.id.nav_host_fragment)
                 val graph = navController.navInflater.inflate(R.navigation.nav_graph).apply {
-                    startDestination = if (auth.currentUser == null) {
+                    setStartDestination(if (auth.currentUser == null) {
                         R.id.loginFragment
                     } else {
                         R.id.libraryFragment
-                    }
+                    })
                 }
                 navController.graph = graph
                 appBarConfig = AppBarConfiguration(topLevelDestinations, binding.drawerLayout)
