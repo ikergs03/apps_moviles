@@ -3,6 +3,7 @@ package com.example.mylibrary.ui
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
 import androidx.preference.PreferenceManager
@@ -11,9 +12,11 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.mylibrary.R
+import com.example.mylibrary.data.repository.LibraryRepository
 import com.example.mylibrary.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -21,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfig: AppBarConfiguration
     @Inject lateinit var auth: FirebaseAuth
+    @Inject lateinit var libraryRepository: LibraryRepository
     private val topLevelDestinations = setOf(
         R.id.libraryFragment,
         R.id.addEditFragment,
@@ -34,6 +38,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+
+        lifecycleScope.launch {
+            libraryRepository.claimLegacyItemsForAdmin()
+        }
 
         binding.root.post {
             try {

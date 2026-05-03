@@ -19,7 +19,8 @@ data class LibraryItemEntity(
     val status: String = ItemStatus.PENDING.name,
     val rating: Float = 0f,
     val review: String = "",
-    val tags: String = ""
+    val tags: String = "",
+    val ownerId: String? = null
 ) {
     fun toLibraryItem() = LibraryItem(
         id = id,
@@ -49,7 +50,8 @@ data class LibraryItemEntity(
             status = item.status.name,
             rating = item.rating,
             review = item.review,
-            tags = item.tags
+            tags = item.tags,
+            ownerId = null
         )
     }
 }
