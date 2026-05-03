@@ -6,6 +6,12 @@
     app:startDestination="@id/libraryFragment">
 
     <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.mylibrary.ui.auth.LoginFragment"
+        android:label="@string/auth_title"
+        tools:layout="@layout/fragment_login" />
+
+    <fragment
         android:id="@+id/libraryFragment"
         android:name="com.example.mylibrary.ui.library.LibraryFragment"
         android:label="Mi Biblioteca"

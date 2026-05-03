@@ -20,6 +20,7 @@ import com.example.mylibrary.data.model.ItemType
 import com.example.mylibrary.data.model.LibraryItem
 import com.example.mylibrary.databinding.FragmentLibraryBinding
 import com.example.mylibrary.ui.settings.SettingsActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -135,6 +136,17 @@ class LibraryFragment : Fragment() {
                 return when (item.itemId) {
                     R.id.action_settings -> {
                         startActivity(Intent(requireContext(), SettingsActivity::class.java))
+                        true
+                    }
+                    R.id.action_logout -> {
+                        FirebaseAuth.getInstance().signOut()
+                        findNavController().navigate(
+                            R.id.loginFragment,
+                            null,
+                            androidx.navigation.navOptions {
+                                popUpTo(R.id.libraryFragment) { inclusive = true }
+                            }
+                        )
                         true
                     }
                     else -> false

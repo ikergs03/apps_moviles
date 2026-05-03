@@ -41,4 +41,12 @@
     <string name="pref_confirm_delete_off">Los elementos se eliminarán sin confirmación</string>
     <string name="pref_default_tags_title">Etiquetas por defecto</string>
     <string name="pref_default_tags_dialog">Introduce etiquetas por defecto (separadas por coma)</string>
+    <string name="auth_title">Acceso</string>
+    <string name="auth_email">Correo electrónico</string>
+    <string name="auth_password">Contraseña</string>
+    <string name="auth_login">Iniciar sesión</string>
+    <string name="auth_register">Registrarme</string>
+    <string name="auth_logout">Cerrar sesión</string>
+    <string name="auth_logged_in">Sesión activa: %1$s</string>
+    <string name="auth_logged_out">Sin sesión activa</string>
 </resources>

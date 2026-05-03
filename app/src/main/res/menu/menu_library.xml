@@ -15,4 +15,10 @@
         android:title="@string/settings"
         app:showAsAction="ifRoom|withText" />
 
+    <item
+        android:id="@+id/action_logout"
+        android:icon="@android:drawable/ic_lock_power_off"
+        android:title="@string/auth_logout"
+        app:showAsAction="never" />
+
 </menu>

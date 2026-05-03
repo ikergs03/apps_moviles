@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import androidx.navigation.navOptions
 import androidx.preference.PreferenceManager
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -11,13 +12,15 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.mylibrary.R
 import com.example.mylibrary.databinding.ActivityMainBinding
-import com.example.mylibrary.ui.settings.SettingsActivity
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfig: AppBarConfiguration
+    @Inject lateinit var auth: FirebaseAuth
     private val topLevelDestinations = setOf(
         R.id.libraryFragment,
         R.id.addEditFragment,
@@ -32,11 +35,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
-        SettingsActivity.setLoggedIn(this, true)
-
         binding.root.post {
             try {
                 val navController = findNavController(R.id.nav_host_fragment)
+                val graph = navController.navInflater.inflate(R.navigation.nav_graph).apply {
+                    startDestination = if (auth.currentUser == null) {
+                        R.id.loginFragment
+                    } else {
+                        R.id.libraryFragment
+                    }
+                }
+                navController.graph = graph
                 appBarConfig = AppBarConfiguration(topLevelDestinations, binding.drawerLayout)
                 setupActionBarWithNavController(navController, appBarConfig)
                 binding.navView.setupWithNavController(navController)
