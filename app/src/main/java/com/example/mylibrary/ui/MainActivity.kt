@@ -40,18 +40,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
-        lifecycleScope.launch {
-            libraryRepository.claimLegacyItemsForAdmin()
-        }
-
         authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             if (firebaseAuth.currentUser != null) {
-                lifecycleScope.launch {
-                    libraryRepository.claimLegacyItemsForAdmin()
-                }
+                syncAuthenticatedUserData()
+            } else {
+                libraryRepository.stopFirestoreSync()
             }
         }
         auth.addAuthStateListener(authStateListener)
+
+        syncAuthenticatedUserData()
 
         binding.root.post {
             try {
@@ -87,8 +85,18 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfig) || super.onSupportNavigateUp()
     }
 
+    private fun syncAuthenticatedUserData() {
+        if (auth.currentUser == null) return
+
+        lifecycleScope.launch {
+            libraryRepository.claimLegacyItemsForAdmin()
+            libraryRepository.startFirestoreSync(lifecycleScope)
+        }
+    }
+
     override fun onDestroy() {
         auth.removeAuthStateListener(authStateListener)
+        libraryRepository.stopFirestoreSync()
         super.onDestroy()
     }
 }

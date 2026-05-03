@@ -20,6 +20,7 @@ object DatabaseModule {
     fun provideDatabase(@ApplicationContext context: Context): LibraryDatabase =
         Room.databaseBuilder(context, LibraryDatabase::class.java, "library_db")
             .addMigrations(LibraryDatabase.MIGRATION_1_2)
+            .addMigrations(LibraryDatabase.MIGRATION_2_3)
             .fallbackToDestructiveMigration()
             .build()
 

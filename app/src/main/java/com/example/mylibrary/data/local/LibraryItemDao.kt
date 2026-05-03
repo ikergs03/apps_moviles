@@ -11,8 +11,14 @@ interface LibraryItemDao {
     @Query("SELECT * FROM library_items WHERE ownerId = :userId ORDER BY title ASC")
     fun getAllItemsForUser(userId: String): LiveData<List<LibraryItemEntity>>
 
+    @Query("SELECT * FROM library_items WHERE ownerId = :userId ORDER BY title ASC")
+    suspend fun getAllItemsForUserOnce(userId: String): List<LibraryItemEntity>
+
     @Query("SELECT * FROM library_items WHERE id = :id")
     suspend fun getItemById(id: Long): LibraryItemEntity?
+
+    @Query("SELECT * FROM library_items WHERE ownerId = :userId AND syncId = :syncId LIMIT 1")
+    suspend fun getItemBySyncId(userId: String, syncId: String): LibraryItemEntity?
 
     @Query("SELECT * FROM library_items WHERE type = :type ORDER BY title ASC")
     fun getItemsByType(type: String): LiveData<List<LibraryItemEntity>>
@@ -34,6 +40,9 @@ interface LibraryItemDao {
 
     @Query("UPDATE library_items SET ownerId = :ownerId WHERE ownerId IS NULL")
     suspend fun assignOwnerToUnownedItems(ownerId: String): Int
+
+    @Query("UPDATE library_items SET syncId = :syncId WHERE id = :id")
+    suspend fun updateSyncId(id: Long, syncId: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItem(item: LibraryItemEntity): Long

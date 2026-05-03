@@ -20,7 +20,8 @@ data class LibraryItemEntity(
     val rating: Float = 0f,
     val review: String = "",
     val tags: String = "",
-    val ownerId: String? = null
+    val ownerId: String? = null,
+    val syncId: String = ""
 ) {
     fun toLibraryItem() = LibraryItem(
         id = id,
@@ -51,7 +52,8 @@ data class LibraryItemEntity(
             rating = item.rating,
             review = item.review,
             tags = item.tags,
-            ownerId = null
+            ownerId = null,
+            syncId = ""
         )
     }
 }
