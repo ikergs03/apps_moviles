@@ -34,20 +34,24 @@ class MainActivity : AppCompatActivity() {
 
         SettingsActivity.setLoggedIn(this, true)
 
-        val navController = findNavController(R.id.nav_host_fragment)
-        appBarConfig = AppBarConfiguration(topLevelDestinations, binding.drawerLayout)
-        setupActionBarWithNavController(navController, appBarConfig)
-        binding.navView.setupWithNavController(navController)
-        binding.bottomNav.setupWithNavController(navController)
+        binding.root.post {
+            try {
+                val navController = findNavController(R.id.nav_host_fragment)
+                appBarConfig = AppBarConfiguration(topLevelDestinations, binding.drawerLayout)
+                setupActionBarWithNavController(navController, appBarConfig)
+                binding.navView.setupWithNavController(navController)
+                binding.bottomNav.setupWithNavController(navController)
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            val isTopLevel = destination.id in topLevelDestinations
-            binding.bottomNav.visibility = if (isTopLevel) View.VISIBLE else View.GONE
-            binding.toolbar.navigationIcon?.setTint(getColor(R.color.gray_toolbar_icon))
-        }
+                navController.addOnDestinationChangedListener { _, destination, _ ->
+                    val isTopLevel = destination.id in topLevelDestinations
+                    binding.bottomNav.visibility = if (isTopLevel) View.VISIBLE else View.GONE
+                    binding.toolbar.navigationIcon?.setTint(getColor(R.color.gray_toolbar_icon))
+                }
 
-        binding.toolbar.post {
-            binding.toolbar.navigationIcon?.setTint(getColor(R.color.gray_toolbar_icon))
+                binding.toolbar.navigationIcon?.setTint(getColor(R.color.gray_toolbar_icon))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
