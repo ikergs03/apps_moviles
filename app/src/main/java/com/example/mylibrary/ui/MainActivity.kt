@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfig: AppBarConfiguration
     @Inject lateinit var auth: FirebaseAuth
     @Inject lateinit var libraryRepository: LibraryRepository
+    private lateinit var authStateListener: FirebaseAuth.AuthStateListener
     private val topLevelDestinations = setOf(
         R.id.libraryFragment,
         R.id.addEditFragment,
@@ -42,6 +43,15 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             libraryRepository.claimLegacyItemsForAdmin()
         }
+
+        authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            if (firebaseAuth.currentUser != null) {
+                lifecycleScope.launch {
+                    libraryRepository.claimLegacyItemsForAdmin()
+                }
+            }
+        }
+        auth.addAuthStateListener(authStateListener)
 
         binding.root.post {
             try {
@@ -75,5 +85,10 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfig) || super.onSupportNavigateUp()
+    }
+
+    override fun onDestroy() {
+        auth.removeAuthStateListener(authStateListener)
+        super.onDestroy()
     }
 }
