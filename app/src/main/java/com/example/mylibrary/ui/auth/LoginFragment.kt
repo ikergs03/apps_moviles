@@ -56,20 +56,40 @@ class LoginFragment : Fragment() {
         }
 
         binding.btnRegister.setOnClickListener {
-            val email = binding.etEmail.text?.toString().orEmpty().trim()
-            val password = binding.etPassword.text?.toString().orEmpty().trim()
-            viewModel.register(email, password)
+            getLoginData()?.let { (email, password) ->
+                viewModel.register(email, password)
+            }
         }
 
         binding.btnLogin.setOnClickListener {
-            val email = binding.etEmail.text?.toString().orEmpty().trim()
-            val password = binding.etPassword.text?.toString().orEmpty().trim()
-            viewModel.login(email, password)
+            getLoginData()?.let { (email, password) ->
+                viewModel.login(email, password)
+            }
         }
 
         binding.btnLogout.setOnClickListener {
             viewModel.logout()
         }
+    }
+
+    private fun getLoginData(): Pair<String, String>? {
+        val email = binding.etEmail.text?.toString().orEmpty().trim()
+        val password = binding.etPassword.text?.toString().orEmpty().trim()
+
+        binding.tilEmail.error = null
+        binding.tilPassword.error = null
+
+        var valid = true
+        if (email.isBlank()) {
+            binding.tilEmail.error = getString(R.string.auth_error_email)
+            valid = false
+        }
+        if (password.isBlank()) {
+            binding.tilPassword.error = getString(R.string.auth_error_password)
+            valid = false
+        }
+
+        return if (valid) email to password else null
     }
 
     override fun onDestroyView() {

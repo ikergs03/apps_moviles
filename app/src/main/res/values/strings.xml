@@ -59,4 +59,6 @@
     <string name="auth_logout">Cerrar sesión</string>
     <string name="auth_logged_in">Sesión activa: %1$s</string>
     <string name="auth_logged_out">Sin sesión activa</string>
+    <string name="auth_error_email">Introduce el correo</string>
+    <string name="auth_error_password">Introduce la contraseña</string>
 </resources>
