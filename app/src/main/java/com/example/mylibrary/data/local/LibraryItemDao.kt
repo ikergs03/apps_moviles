@@ -55,4 +55,7 @@ interface LibraryItemDao {
 
     @Query("DELETE FROM library_items WHERE id = :id")
     suspend fun deleteItemById(id: Long)
+
+    @Query("DELETE FROM library_items WHERE ownerId = :userId AND syncId = :syncId")
+    suspend fun deleteItemBySyncId(userId: String, syncId: String)
 }

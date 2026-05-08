@@ -3,6 +3,7 @@ package com.example.mylibrary.data.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -123,11 +124,19 @@ class LibraryRepository @Inject constructor(
             if (error != null || snapshot == null) return@addSnapshotListener
 
             scope.launch(Dispatchers.IO) {
-                snapshot.documents
-                    .mapNotNull { it.toLibraryItemEntity(user.uid) }
-                    .forEach { remoteEntity ->
-                        upsertLocalEntity(remoteEntity)
+                snapshot.documentChanges.forEach { change ->
+                    when (change.type) {
+                        DocumentChange.Type.ADDED,
+                        DocumentChange.Type.MODIFIED -> {
+                            change.document.toLibraryItemEntity(user.uid)?.let { remoteEntity ->
+                                upsertLocalEntity(remoteEntity)
+                            }
+                        }
+                        DocumentChange.Type.REMOVED -> {
+                            dao.deleteItemBySyncId(user.uid, change.document.id)
+                        }
                     }
+                }
             }
         }
     }
